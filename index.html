@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="styles.css">
+        <link rel="stylesheet" type="text/css" href="media-queries.css">
+        <link href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Mono:400,700&display=swap" rel="stylesheet">
+        <title>Technical Documentation Page</title>
+    </head>
+    <body>
+        <nav id="navbar">
+            <div id="nav-header">
+                <a href="#creating_a_scene"><header>Getting started with three.js</header></a>
+            </div>
+
+            <ul>
+                <li><a href="#creating_a_scene">Creating a scene</a></li>
+                <li><a href="#import_via_modules">Import via modules</a></li>
+                <li><a href="#browser_support">Browser support</a></li>
+                <li><a href="#webgl_compatibility_check">WebGL compatibility check</a></li>
+                <li><a href="#how_to_run_things_locally">How to run things locally</a></li>
+                <li><a href="#typescript_setup">Typescript setup</a></li>
+                <li><a href="#how_to_use_webgl2">How to use WebGL 2</a></li>
+                <li><a href="#drawing_lines">Drawing lines</a></li>
+                <li><a href="#creating_text">Creating text</a></li>
+                <li><a href="#loading_3d_models">Loading 3D models</a></li>
+                <li><a href="#faq">FAQ</a></li>
+                <li><a href="#useful_links">Useful links</a></li>
+            </ul>
+        </nav>
+        <main id="main-doc">
+            <section class="main-section" id="creating_a_scene">
+                <h2 class="section-header">Creating a scene</h2>
+                <article>
+                    <p>
+                        The goal of this section is to give a brief introduction to three.js. 
+                        We will start by setting up a scene, with a spinning cube. A working 
+                        example is provided at the bottom of the page in case you get stuck 
+                        and need help.
+                    </p>
+                    <h2>Before we start</h2>
+                    <p>
+                        Before you can use three.js, you need somewhere to display it. Save 
+                        the following HTML to a file on your computer, along with a copy of 
+                        three.js in the js/ directory, and open it in your browser.
+                    </p>
+                    <!-- <pre> -->
+                        <code>
+    <span class="tag">&lt;!DOCTYPE html&gt;</span>
+    <span class="tag">&lt;html&gt;</span>
+        <span class="tag">&lt;head&gt;</span>
+            <span class="tag">&lt;meta</span> <span class="attr-name">charset</span>=<span class="attr-txt">"utf-8"</span><span class="tag">&gt;</span>
+            <span class="tag">&lt;title&gt;</span>My first three.js app<span class="tag">&lt;/title&gt;</span>
+            <span class="tag">&lt;style&gt;</span>
+                body { margin: <span class="css-value">0</span>; }
+                canvas { display: block; }
+            <span class="tag">&lt;/style&gt;</span>
+        <span class="tag">&lt;/head&gt;</span>
+        <span class="tag">&lt;body&gt;</span>
+            <span class="tag">&lt;script</span> <span class="attr-name">src</span>=<span class="attr-txt">"js/three.js"</span><span class="tag">&lt;/script&gt;</span>
+            <span class="tag">&lt;script&gt;</span>
+                <span class="js-comment">// Our Javascript will go here.</span>
+            <span class="tag">&lt;/script&gt;</span>
+        <span class="tag">&lt;/body&gt;</span>
+    <span class="tag">&lt;/html&gt;</span>
+                        </code>
+                    <!-- </pre> -->
+                    <p>That's all. All the code below goes into the empty &lt;script&gt; tag.</p>
+                </article>
+                <article>
+                    <h2>Creating the scene</h2>
+                    <p>To actually be able to display anything with three.js, we need three things: 
+                        scene, camera and renderer, so that we can render the scene with camera.
+                    </p>
+                    <!-- <pre> -->
+                        <code>
+    <span class="js-var-kw">var</span> <span class="js-var-name">scene</span> = <span class="js-var-kw">new</span> <span class="js-obj-name">THREE</span>.<span class="js-fn-name">Scene</span>();
+    <span class="js-var-kw">var</span> <span class="js-var-name">camera</span> = <span class="js-var-kw">new</span> <span class="js-obj-name">THREE</span>.<span class="js-obj-name">PerspectiveCamera</span>( <span class="js-int">75</span>, <span class="js-var-name">window</span>.innerWidth / 
+    <span class="js-var-name">window</span>.innerHeight, <span class="js-int">0.1</span>, <span class="js-int">1000</span> );
+
+    <span class="js-var-kw">var</span> <span class="js-var-name">renderer</span> = <span class="js-var-kw">new</span> <span class="js-obj-name">THREE</span>.<span class="js-obj-name">WebGLRenderer</span>();
+    <span class="js-var-name">renderer</span>.setSize( <span class="js-var-name">window</span>.innerWidth, <span class="js-var-name">window</span>.innerHeight );
+    <span class="js-var-name">document</span>.<span class="js-var-name">body</span>.appendChild( <span class="js-var-name">renderer</span>.domElement );
+                        </code>
+                    <!-- </pre> -->
+                    <p>
+                        Let's take a moment to explain what's going on here. We have now set up the 
+                        scene, our camera and the renderer.
+                    </p>
+                    <p>
+                        There are a few different cameras in three.js. For now, let's use a 
+                        <strong>PerspectiveCamera</strong>.
+                    </p>
+                    <p>
+                        The first attribute is the <strong>field of view</strong>. FOV is the extent of the scene 
+                        that is seen on the display at any given moment. The value is in degrees.
+                    </p>
+                    <p>
+                        The second one is the <strong>aspect ratio</strong>. You almost always want to use the width 
+                        of the element divided by the height, or you'll get the same result as when 
+                        you play old movies on a widescreen TV - the image looks squished.
+                    </p>
+                    <p>
+                        The next two attributes are the <strong>near</strong> and <strong>far</strong> clipping plane. What that means, is that objects 
+                        further away from the camera than the value of far or closer than near won't be rendered. 
+                        You don't have to worry about this now, but you may want to use other values in your apps to 
+                        get better performance.
+                    </p>
+                    <p>
+                        Next up is the renderer. This is where the magic happens. In addition to the WebGLRenderer we 
+                        use here, three.js comes with a few others, often used as fallbacks for users with older browsers 
+                        or for those who don't have WebGL support for some reason.
+                    </p>
+                    <p>
+                        In addition to creating the renderer instance, we also need to set the size at which we want it to render our 
+                        app. It's a good idea to use the width and height of the area we want to fill with our app - in this case, 
+                        the width and height of the browser window. For performance intensive apps, you can also give <strong>setSize</strong> smaller 
+                        values, like <strong>window.innerWidth/2</strong> and <strong>window.innerHeight/2</strong>, which will make the app render at half size.
+                    </p>
+                    <p>
+                        If you wish to keep the size of your app but render it at a lower resolution, you can do so by calling <strong>setSize</strong> with false as <strong>updateStyle</strong> 
+                        (the third argument). For example, <strong>setSize(window.innerWidth/2</strong>, <strong>window.innerHeight/2, false)</strong> will render your app at half resolution, given 
+                        that your &lt;canvas&gt; has 100% width and height.
+                    </p>
+                    <p>
+                        Last but not least, we add the renderer element to our HTML document. This is a &lt;canvas&gt; element the 
+                        renderer uses to display the scene to us.
+                    </p>
+                    <p>
+                        <em style="color: red;"> "That's all good, but where's that cube you promised?"</em>
+                        Let's add it now.
+                    </p>
+                    <!-- <pre> -->
+                        <code>
+    <span class="js-var-kw">var</span> <span class="js-var-name">geometry</span> = <span class="js-var-kw">new</span> <span class="js-fn-name">THREE</span>.<span class="js-fn-name">BoxGeometry</span>();
+    <span class="js-var-kw">var</span> <span class="js-var-name">material</span> = <span class="js-var-kw">new</span> <span class="js-fn-name">THREE</span>.<span class="js-fn-name">MeshBasicMaterial</span>( { color: <span class="css-value">0x00ff00</span> } );
+    <span class="js-var-kw">var</span> <span class="js-var-name">cube</span> = <span class="js-var-kw">new</span> <span class="js-fn-name">THREE</span>.<span class="js-fn-name">Mesh</span>( geometry, material );
+    <span class="js-var-name">scene</span>.add( <span class="js-var-name">cube</span> );
+
+    <span class="js-var-name">camera</span>.<span class="js-var-name">position</span>.z = 5;
+                        </code>
+                    <!-- </pre> -->
+                    <p>To create a cube, we need a <strong>BoxGeometry</strong>. This is an object that contains all the points (<strong>vertices</strong>) 
+                        and fill (<strong>faces</strong>) of the cube. We'll explore this more in the future.
+                    </p>
+                    <p>
+                        In addition to the geometry, we need a material to color it. Three.js comes with several 
+                        materials, but we'll stick to the <strong>MeshBasicMaterial</strong> for now. All materials take an object 
+                        of properties which will be applied to them. To keep things very simple, we only supply a 
+                        color attribute of <strong>>0x00ff00</strong>, which is green. This works the same way that colors work in CSS 
+                        or Photoshop (<strong>hex colors</strong>).
+                    </p>
+                    <p>
+                        The third thing we need is a <strong>Mesh</strong>. A mesh is an object that takes a geometry, and 
+                        applies a material to it, which we then can insert to our scene, and move freely around.
+                    </p>
+                    <p>
+                        By default, when we call <strong>scene.add()</strong>, the thing we add will be added to the coordinates <strong>(0,0,0)</strong>. This 
+                        would cause both the camera and the cube to be inside each other. To avoid this, we simply move 
+                        the camera out a bit.
+                    </p>
+                </article>
+                <article>
+                    <h2>Rendering the scene</h2>
+                    <p>If you copied the code from above into the HTML file we created earlier, you wouldn't be able to see 
+                        anything. This is because we're not actually rendering anything yet. For that, we need what's called 
+                        a <strong>render</strong> or <strong>animate</strong> loop.
+                    </p>
+                    <!-- <pre> -->
+                        <code>
+    <span class="js-fn-kw">function</span> animate() {
+        requestAnimationFrame( <span class="js-obj-name">animate</span> );
+        <span class="js-obj-name">renderer</span>.render( <span class="js-obj-name">scene</span>, <span class="js-obj-name">camera</span> );
+    }
+    animate();
+                        </code>
+                    <!-- </pre> -->
+                    <p>
+                        This will create a loop that causes the renderer to draw the scene every time the screen is 
+                        refreshed (on a typical screen this means 60 times per second). If you're new to writing games in the browser, 
+                        you might say "why don't we just create a setInterval ?" The thing is - we could, but <strong>requestAnimationFrame</strong> has 
+                        a number of advantages. Perhaps the most important one is that it pauses when the user navigates to another 
+                        browser tab, hence not wasting their precious processing power and battery life.
+                    </p>
+                </article>
+                <article>
+                    <h2>Animating the cube</h2>
+                    <p>
+                        If you insert all the code above into the file you created before we began, you should see a 
+                        green box. Let's make it all a little more interesting by rotating it.
+                    </p>
+                    <p>
+                        Add the following right above the renderer.render call in your animate function:
+                    </p>
+                    <!-- <pre> -->
+                        <code>
+    <span class="js-obj-name">cube</span>.<span class="js-obj-name">rotation</span>.x += <span class="js-float">0.01</span>;
+    <span class="js-obj-name">cube</span>.<span class="js-obj-name">rotation</span>.y += <span class="js-float">0.01</span>;
+                        </code>
+                    <!-- </pre> -->
+                    <p>
+                        This will be run every frame (normally 60 times per second), and give the cube a nice 
+                        rotation animation. Basically, anything you want to move or change while the app is running 
+                        has to go through the animate loop. You can of course call other functions from there, so that 
+                        you don't end up with a <strong>animate</strong> function that's hundreds of lines.
+                    </p>
+                </article>
+                <article>
+                    <h2>The result</h2>
+                    <p>Congratulations! You have now completed your first three.js application. It's simple, you have to 
+                        start somewhere.
+                    </p>
+                    <p>
+                        The full code is available below and as an editable <a href="https://jsfiddle.net/mkba0ecu/" target="_blank">live example</a>. Play around with it to get a 
+                        better understanding of how it works.
+                    </p>
+                    <!-- <pre> -->
+                        <code>
+    <span class="tag">&lt;html&gt;</span>
+        <span class="tag">&lt;head&gt;</span>
+            <span class="tag">&lt;title&gt;</span>My first three.js app<span class="tag">&lt;/title&gt;</span>
+            <span class="tag">&lt;style&gt;</span>
+                body { margin: 0; }
+                canvas { display: block; }
+            <span class="tag">&lt;/style&gt;</span>
+        <span class="tag">&lt;/head&gt;</span>
+        <span class="tag">&lt;body&gt;</span>
+            <span class="tag">&lt;script</span> src="js/three.js"<span class="tag">&gt;</span><span class="tag">&lt;/script&gt;</span>
+            <span class="tag">&lt;style&gt;</span>
+                <span class="js-var-kw">var</span> <span class="js-var-name">scene</span> = <span class="js-var-kw">new</span> <span class="js-class-kw">THREE</span>.<span class="js-class-name">Scene</span>();
+                <span class="js-var-kw">var</span> <span class="js-var-name">camera</span> = <span class="js-var-kw">new</span> <span class="js-class-kw">THREE</span>.<span class="js-class-name">PerspectiveCamera</span>( <span class="js-int">75</span>, 
+                <span class="js-obj-name">window</span>.innerWidth/<span class="js-obj-name">window</span>.innerHeight, <span class="js-float">0.1</span>, <span class="js-int">1000</span> );
+
+                <span class="js-var-kw">var</span> <span class="js-var-name">renderer</span> = <span class="js-var-kw">new</span> <span class="js-class-kw">THREE</span>.<span class="js-class-name">WebGLRenderer</span>();
+                <span class="js-var-name">renderer</span>.setSize( <span class="js-obj-name">window</span>.innerWidth, <span class="js-obj-name">window</span>.innerHeight );
+                <span class="js-obj-name">document</span>.<span class="js-obj-name">body</span>.appendChild( <span class="js-var-name">renderer</span>.domElement );
+
+                <span class="js-var-kw">var</span> geometry = new THREE.BoxGeometry();
+                <span class="js-var-kw">var</span> material = new THREE.MeshBasicMaterial( { 
+                    color: 0x00ff00 } );
+                <span class="js-var-kw">var</span> cube = new THREE.Mesh( geometry, material );
+                scene.add( cube );
+
+                camera.position.z = 5;
+
+                <span class="js-var-kw">var</span> animate = <span class="js-fn-kw">function</span> () {
+                    requestAnimationFrame( <span class="js-obj-name">animate</span> );
+
+                    <span class="js-obj-name">cube</span>.<span class="js-obj-name"rotation></span>.x += <span class="js-float">0.01</span>;
+                    <span class="js-obj-name">cube</span>.<span class="js-obj-name"rotation></span>.y += <span class="js-float">0.01</span>;
+
+                    <span class="js-obj-name">renderer</span>.render( <span class="js-obj-name">scene</span>, <span class="js-obj-name">camera</span> );
+                };
+
+                animate();
+            <span class="tag">&lt;/style&gt;</span>
+        <span class="tag">&lt;/body&gt;</span>
+    <span class="tag">&lt;/html&gt;</span>
+                        </code>
+                    <!-- </pre> -->
+                </article>
+            </section>
+            <section class="main-section" id="import_via_modules">
+                <h2 class="section-header">Import via modules</h2>
+                <article>
+                    <p>
+                        While importing three.js via script tags is a great way to 
+                        get up and running fast, it has a few drawbacks for longer 
+                        lived projects, for example:
+                    </p>
+                    <ul>
+                        <li>
+                            You have to manually fetch and include a copy of the 
+                            library as part of your project's source code
+                        </li>
+                        <li>
+                            Updating the library's version is a manual process
+                        </li>
+                        <li>
+                            When checking in a new version of the library your version 
+                            control diffs are cluttered by the many lines of the build 
+                            file
+                        </li>
+                    </ul>
+                    <p>
+                        Using a dependency manager like npm avoids these caveats by allowing 
+                        you to simply download and import your desired version of the library 
+                        onto your machine.
+                    </p>
+                </article>
+                <article>
+                    <h2>Installation via npm</h2>
+                    <p>
+                        Three.js is published as an npm module, see: <a href="https://www.npmjs.com/package/three" target="_blank">npm</a>. 
+                        This means all you need to do to include three.js into your project is run "npm install 
+                        three"
+                    </p>
+                </article>
+                <h2>Importing the module</h2>
+                <article>
+                    <p>
+                        Assuming that you're bundling your files with a tool such as <a href="https://webpack.github.io/" target="_blank">Webpack</a> or 
+                        <a href="https://github.com/browserify/browserify" target="_blank">Browserify</a>, which allow you to "require('modules')" in the browser by bundling 
+                        up all of your dependencies.
+                    </p>
+                    <p>
+                        You should now be able to import the module into your source files and continue to 
+                        use it as per normal.
+                    </p>
+                    <!-- <pre> -->
+                        <code>
+    <span class="js-var-kw">var</span> <span class="js-var-name">THREE</span> = <span class="js-method">require</span>(<span class="attr-txt">'three'</span>);
+
+    <span class="js-var-kw">var</span> <span class="js-var-name">scene</span> = <span class="js-var-kw">new</span> <span class="js-class-name">THREE</span>.<span class="js-class-name">Scene</span>();
+        ...
+                        </code>
+                    <!-- </pre> -->
+                    <p>
+                        You're also able to leverage <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import" target="_blank">ES6 import syntax</a>:
+                    </p>
+                    <!-- <pre> -->
+                        <code>
+    <span class="js-var-kw">import</span> <span class=".js-method">*</span> <span class="js-var-kw">as</span> <span class="js-obj-name">THREE</span> <span class="js-fn-kw">from</span> <span class="attr-txt">'three'</span>;
+
+    <span class="js-var-kw">const</span> <span class="js-obj-name">scene</span> = <span class="js-fn-kw">new</span> <span class="js-class-name">THREE</span>.<span class="js-class-name">Scene</span>();
+        ...
+                        </code>
+                    <!-- </pre> -->
+
+                    <p>
+                        or if you wish to import only select parts of three.js library, for example Scene:
+                    </p>
+                    <!-- <pre> -->
+                        <code>
+    <span class="js-var-kw">import</span> { <span class="js-obj-name">Scene</span> } <span class="js-fn-kw">from</span> <span class="attr-txt">'three'</span>;
+
+    <span class="js-var-kw">const</span> <span class="js-obj-name">scene</span> = <span class="js-fn-kw">new</span> <span class="js-class-name">Scene</span>();
+        ...
+                        </code>
+                    <!-- </pre> -->
+                </article>
+                <article>
+                    <h2>Importable Examples</h2>
+                    <p>
+                        The core of three.js is focused on the most important components of a 3D engine. 
+                        Many other components like loaders or controls are part of the examples directory. 
+                        three.js ensures that these files are kept in sync with the core but users have to 
+                        import them separately if they are required for a project. You can find in the <a href="https://github.com/mrdoob/three.js/tree/master/examples/jsm">examples/jsm</a> 
+                        directory an ES6 module version for almost all example files. If you install three.js via 
+                        npm, you can import them like so:
+                    </p>
+                    <!-- <pre> -->
+                        <code>
+    <span class="js-var-kw">import</span> { <span class="js-obj-name">OrbitControls</span> } <span class="js-fn-kw">from</span> 
+        <span class="attr-txt">'three/examples/jsm/controls/OrbitControls.js'</span>;
+                        </code>
+                    <!-- </pre> -->
+                    <p>
+                        Note: When using code from the examples directory, it's important that all files match 
+                        the version of your three.js main file. For example, it's not acceptable to use <strong>GLTFLoader</strong> 
+                        and <strong>OrbitControls</strong> from R96 together with three.js R103.
+                    </p>
+                </article>
+            </section>
+            <section class="main-section" id="browser_support">
+                <h2 class="section-header">Browser Support</h2>
+                <article>
+                    <h2>Overview</h2>
+                    <p>
+                        Three.js can use WebGL to render your scenes 
+                        on all modern browsers. For older browsers, 
+                        especially Internet Explorer 10 and below, you 
+                        may have to fallback to one of the other 
+                        <a href="https://github.com/mrdoob/three.js/tree/master/examples/jsm/renderers" target="_blank">renderers</a> 
+                        (CSS2DRenderer, CSS3DRenderer, SVGRenderer). Additionally, 
+                        you may have to include some polyfills, especially if 
+                        you are using files from the /examples folder.
+                    </p>
+                    <p>
+                        Note: if you don't need to support these old browsers, 
+                        then it is not recommended to use the other renderers as 
+                        they are slower and support less features than the WebGLRenderer.
+                    </p>
+                </article>
+                <article>
+                    <h2>Browsers that support WebGL</h2>
+                    <p>
+                        Google Chrome 9+, Firefox 4+, Opera 15+, Safari 5.1+, Internet Explorer 
+                        11 and Microsoft Edge. You can find which browsers support WebGL at 
+                        <a href="https://caniuse.com/#feat=webgl" target="_blank">Can I use WebGL</a>.
+                    </p>
+                </article>
+                <article>
+                    <h2>JavaScript Language Features or Web APIs Used in three.js</h2>
+                    <p>Here are some features used in three.js. Some of them may require additional polyfills.</p>
+                </article>
+                <article>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Feature</th>
+                                <th>Use Scope</th>
+                                <th>Modules</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Typed Arrays</td>
+                                <td>Source</td>
+                                <td>BufferAttribute, BufferGeometry, etc.</td>
+                            </tr>
+                            <tr>
+                                <td>Web Audio API</td>
+                                <td>Source</td>
+                                <td>Audio, AudioContext, AudioListener, etc.</td>
+                            </tr>
+                            <tr>
+                                <td>WebXR Device API</td>
+                                <td>Source</td>
+                                <td>WebXRManager</td>
+                            </tr>
+                            <tr>
+                                <td>Blob</td>
+                                <td>Source</td>
+                                <td>FileLoader, etc.</td>
+                            </tr>
+                            <tr>
+                                <td>Promise</td>
+                                <td>Examples</td>
+                                <td>
+                                    GLTFLoader, DRACOLoader, BasisTextureLoader, GLTFExporter,
+                                    VRButton, ARButton, etc.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Fetch</td>
+                                <td>Examples</td>
+                                <td>ImageBitmapLoader, etc.</td>
+                            </tr>
+                            <tr>
+                                <td>File API</td>
+                                <td>Examples</td>
+                                <td>GLTFExporter, etc.</td>
+                            </tr>
+                            <tr>
+                                <td>URL API</td>
+                                <td>Examples</td>
+                                <td>GLTFLoader, etc.</td>
+                            </tr>
+                            <tr>
+                                <td>Pointer Lock API</td>
+                                <td>Examples</td>
+                                <td>PointerLockControls</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </article>
+                <article>
+                    <h2>Polyfills</h2>
+                    <p>
+                        Just import polyfills based on your requirements. 
+                        Taking IE9 as an example, you need to polyfill at 
+                        least these features:
+                    </p>
+                    <ul>
+                        <li>Typed Arrays</li>
+                        <li>Blob</li>
+                    </ul>
+                    <h3>Suggested polyfills</h3>
+                    <ul>
+                        <li><a href="https://github.com/zloirock/core-js" target="_blank">core-js</a></li>
+                        <li><a href="https://github.com/inexorabletash/polyfill/blob/master/typedarray.js" target="_blank">typedarray.js</a></li>
+                        <li><a href="https://github.com/stefanpenner/es6-promise/" target="_blank">ES6-Promise</a></li>
+                        <li><a href="https://github.com/eligrey/Blob.js" target="_blank">Blob.js</a></li>
+                        <li><a href="https://github.com/github/fetch" target="_blank">fetch</a></li>
+                    </ul>
+                </article>
+            </section>
+            <section class="main-section" id="webgl_compatibility_check">
+                <h2 class="section-header">WebGL compatibility check</h2>
+                <p>
+                    Even though this is becoming less and less of a problem, some devices or browsers may still 
+                    not support WebGL. The following method allows you to check if it is supported and display a 
+                    message to the user if it is not.
+                </p>
+                <p>
+                    Add <a href="https://github.com/mrdoob/three.js/blob/master/examples/jsm/WebGL.js" target="_blank">https://github.com/mrdoob/three.js/blob/master/examples/jsm/WebGL.js</a> to your javascript 
+                    and run the following before attempting to render anything.
+                </p>
+                <!-- <pre> -->
+                    <code>
+    <span class="js-if">if</span> ( <span class="js-obj-name">WEBGL</span>.isWebGLAvailable() ) {
+
+        <span class="js-comment">// Initiate function or other initializations here</span>
+        animate();
+    
+    } <span class="js-else">else</span> {
+    
+        <span class="js-var-kw">var</span> <span class="js-var-name">warning</span> = <span class="js-obj-name">WEBGL</span>.getWebGLErrorMessage();
+        <span class="js-obj-name">document</span>.getElementById( <span class="attr-txt">'container'</span> ).appendChild( 
+            <span class="js-obj-name">warning</span> );
+    
+    }
+                    </code>
+                <!-- </pre> -->
+            </section>
+            <section class="main-section" id="how_to_run_things_locally">
+                <h2 class="section-header">How to run things locally</h2>
+                <p>
+                    If you use just procedural geometries and don't load any textures, webpages should work 
+                    straight from the file system, just double-click on HTML file in a file manager and it should 
+                    appear working in the browser (you'll see file:///yourFile.html in the address bar).
+                </p>
+                <article>
+                    <h2>Content loaded from external files</h2>
+                    <p>
+                        If you load models or textures from external files, due to browsers' 
+                        <a href="https://en.wikipedia.org/wiki/Same-origin_policy" target="_blank"></a>same origin policy 
+                        security restrictions, loading from a file system will fail with a security exception.
+                    </p>
+                    <p>There are two ways to solve this:</p>
+                    <ol>
+                        <li>Change security for local files in a browser. This allows you to access your page as:</li>
+                        <!-- <pre> -->
+                            <code>
+    file:///yourFile.html       
+                            </code>
+                        <!-- </pre> -->
+                        <li>Run files from a local web server. This allows you to access your page as:</li>
+                        <!-- <pre> -->
+                            <code>
+    http://localhost/yourFile.html
+                            </code>
+                        <!-- </pre> -->
+                    </ol>
+                    <p>
+                        If you use option 1, be aware that you may open yourself to some vulnerabilities if 
+                        using the same browser for a regular web surfing. You may want to create a separate 
+                        browser profile / shortcut used just for local development to be safe. Let's go over 
+                        each option in turn.
+                    </p>
+                </article>
+                <article>
+                    <h2>Run a local server</h2>
+                    <p>
+                        Many programming languages have simple HTTP servers built in. They are not as full 
+                        featured as production servers such as <a href="https://www.apache.org/" target="_blank">Apache</a> or 
+                        <a href="https://nginx.org/" target="_blank">NGINX</a>, however they should be sufficient 
+                        for testing your three.js application.
+                    </p>
+                    <h3>Servez</h3>
+                    <p><a href="https://greggman.github.io/servez/" target="_blank">Servez</a> is a simple server with a GUI.</p>
+
+                    <h3>Node.js http-server</h3>
+                    <p>Node.js has a simple HTTP server package. To install:</p>
+                    <!-- <pre> -->
+                        <code>
+    npm install http-server -g
+                        </code>
+                    <!-- </pre> -->
+                    <p>To run (from your local directory):</p>
+                    <!-- <pre> -->
+                        <code>
+    http-server . -p 8000
+                        </code>
+                    <!-- </pre> -->
+
+                    <h3>Python server</h3>
+                    <p>
+                        If you have <a href="https://www.python.org/" target="_blank"></a>Python installed, it should be enough to run this from a command line 
+                        (from your working directory):
+                    </p>
+                    <!-- <pre> -->
+                        <code>
+    //Python 2.x
+    python -m SimpleHTTPServer
+
+    //Python 3.x
+    python -m http.server
+                        </code>
+                    <!-- </pre> -->
+                    <p>This will serve files from the current directory at localhost under port 8000, 
+                        i.e in the address bar type:
+                    </p>
+                    <!-- <pre> -->
+                        <code>
+    http://localhost:8000/
+                        </code>
+                    <!-- </pre> -->
+
+                    <h3>Ruby server</h3>
+                    <p>If you have Ruby installed, you can get the same result running this instead:</p>
+                    <!-- <pre> -->
+                        <code>
+    ruby -r webrick -e "s = WEBrick::HTTPServer.new(:Port => 8000,
+    :DocumentRoot => 
+    Dir.pwd); trap('INT') { s.shutdown }; s.start"
+                        </code>
+                    <!-- </pre> -->
+
+                    <h3>PHP server</h3>
+                    <p>PHP also has a built-in web server, starting with php 5.4.0:</p>
+                    <!-- <pre> -->
+                        <code>
+    php -S localhost:8000
+                        </code>
+                    <!-- </pre> -->
+
+                    <h3>Lighttpd</h3>
+                    <p>
+                        Lighttpd is a very lightweight general purpose webserver. We'll cover installing 
+                        it on OSX with HomeBrew here. Unlike the other servers discussed here, lighttpd 
+                        is a full fledged production ready server.
+                    </p>
+                    <ol>
+                        <li>Install it via homebrew</li>
+                        <!-- <pre> -->
+                            <code>
+    brew install lighttpd
+                            </code>
+                        <!-- </pre> -->
+
+                        <li>
+                            Create a configuration file called lighttpd.conf in the directory where you 
+                            want to run your webserver. There is a sample 
+                            <a href="https://redmine.lighttpd.net/projects/lighttpd/wiki/TutorialConfiguration" target="_blank">here</a>.
+                        </li>
+                        <li>In the conf file, change the server.document-root to the directory you want to serve files from.</li>
+                        <li>Start it with</li>
+                        <!-- <pre> -->
+                            <code>
+    lighttpd -f lighttpd.conf
+                            </code>
+                        <!-- </pre> -->
+                        <li>Navigate to http://localhost:3000/ and it will serve static files from the directory you chose.</li>
+                    </ol>
+                        <h3>IIS</h3>
+                        <p>
+                            If you are using Microsoft IIS as web server. Please add a MIME type settings regarding 
+                            .fbx extension before loading.
+                        </p>
+                        <!-- <pre> -->
+                            <code>
+    File name extension: fbx        MIME Type: text/plain
+                            </code>
+                        <!-- </pre> -->
+                        <p>
+                            By default, IIS blocks .fbx, .obj files downloads. You have to configure IIS to 
+                            enable these kind of files can be download.
+                        </p>
+                        <p>
+                            Other simple alternatives are <a href="https://stackoverflow.com/questions/12905426/what-is-a-faster-alternative-to-pythons-http-server-or-simplehttpserver" target="_blank">discussed here</a> on Stack Overflow.
+                        </p>
+                </article>
+            </section>
+
+            <section class="main-section" id="typescript_setup">
+                <h2 class="section-header">Typescript setup</h2>
+                <p>
+                    three.js is a JavaScript-based library. However, it's possible to use it 
+                    in a TypeScript project, as the library exposes <a href="https://www.typescriptlang.org/docs/handbook/declaration-files/introduction.html" target="_blank">Declaration Files</a> (d.ts files).
+                </p>
+                <p>
+                    A minimal configuration is required for the TypeScript compiler to discover three.js types.
+                    You will need to set the <a href="https://www.typescriptlang.org/docs/handbook/module-resolution.html" target="_blank">moduleResolution</a> 
+                    option to node, and the <a href="https://www.typescriptlang.org/docs/handbook/compiler-options.html" target="_blank">target</a> option to es6 or newer.
+                </p>
+                <!-- <pre> -->
+                    <code>
+    <span class="js-comment">// Example of minimal `tsconfig.json` file</span>
+    {
+        "compilerOptions": {
+            "target": "es6",
+            "moduleResolution": "node",
+        },
+        "include": [ "./src/**/*.ts" ],
+    }
+                    </code>
+                <!-- </pre> -->
+                <p>Note: As of today, it's not yet possible to use three.js typings without using those two options.</p>
+                <p>
+                    Note: It happens that some declarations are incorrect and/or missing. Contributing to 
+                    Declaration Files is really helpful for the community, making three.js typings better 
+                    and more accurate.
+                </p>
+            </section>
+
+            <section class="main-section" id="how_to_use_webgl2">
+                <h2 class="section-header">How to use WebGL2</h2>
+                <p>
+                    Starting with three.js R95, the engine supports rendering with a WebGL 2 context. 
+                    By default three.js always uses a WebGL 1 context when creating an instance of 
+                    <strong>WebGLRenderer</strong>. If you want use a WebGL 2 context, please have a look at the following 
+                    workflow.
+                </p>
+                
+                <article>
+                    <h2>Workflow</h2>
+                    <p>
+                        Since WebGL 2 is not supported by all devices that support WebGL 1, it's important to 
+                        check the respective availability. To do so, please include 
+                        <a href="https://github.com/mrdoob/three.js/blob/master/examples/jsm/WebGL.js" target="_blank"></a>WebGL.js 
+                        into your project.
+                    </p>
+                    <!-- <pre> -->
+                        <code>
+    <span class="js-fn-kw">import</span> { <span class="js-obj-name">WEBGL</span> } from <span class="attr-txt">'three/examples/jsm/WebGL.js'</span>;
+                        </code>
+                    <!-- </pre> -->
+                    <p>Next, use a code similar to the following in order to perform the availability check.</p>
+                    <!-- <pre> -->
+                        <code>
+    <span class="js-if">if</span> ( <span class="js-obj-name">WEBGL</span>.isWebGL2Available() === <span class="js-boolean">false</span> ) {
+
+        <span class="js-obj-name">document</span>.<span class="js-obj-name">body</span>.appendChild( <span class="js-obj-name">WEBGL</span>.getWebGL2ErrorMessage() );
+    
+    }
+                        </code>
+                    <!-- </pre> -->
+                    <p>
+                        Now it's time to create the renderer by applying the HTML5 canvas element and the 
+                        respective WebGL 2 context to the constructor of <strong>WebGLRenderer</strong>. As a result, three.js 
+                        will internally use the given context for rendering and automatically convert the 
+                        built-in material's shader code to GLSL ES 3.00.
+                    </p>
+                    <p>
+                        Since you are manually creating the WebGL 2 rendering context, you also have to pass in 
+                        all necessary context attributes. Note: It's not possible to modify these attributes after 
+                        the context has been created, so passing them to the WebGLRenderer won't have any effect.
+                    </p>
+                    <!-- <pre> -->
+                        <code>
+    <span class="js-var-kw">var</span> <span class="js-var-name">canvas</span> = <span class="js-obj-name">document</span>.createElement( <span class="attr-txt">'canvas'</span> );
+    <span class="js-var-kw">var</span> <span class="js-var-name">context</span> = <span class="js-var-name">canvas</span>.getContext( <span class="attr-txt">'webgl2'</span>, { alpha: <span class="js-boolean">false</span> } );
+    <span class="js-var-kw">var</span> <span class="js-var-name">renderer</span> = <span class="js-fn-kw">new</span> <span class="js-class-name">THREE</span>.<span class="js-class-name">WebGLRenderer</span>( { 
+        canvas: <span class="js-var-name">canvas</span>, context: <span class="js-var-name">context</span> } );
+                        </code>
+                    <!-- </pre> -->
+                    <p>
+                        Sometimes it is necessary to write custom shader code. Use the following code template 
+                        as a basis for your own implementation. First, the GLSL ES 3.00 code.
+                    </p>
+                    <!-- <pre> -->
+                        <code>
+    <span class="tag">&lt;script</span> <span class="attr-name">id</span>=<span class="attr-txt">"vs"</span> <span class="attr-name">type</span>=<span class="attr-txt">"x-shader/x-vertex"</span><span class="tag">&gt;</span>
+        #version 300 es
+        
+        void main() {
+        
+            gl_Position = projectionMatrix * modelViewMatrix * 
+            vec4( position, 1.0 );
+        
+        }
+    <span class="tag">&lt;/script&gt;</span>
+    <span class="tag">&lt;script</span> <span class="attr-name">id</span>="fs" <span class="attr-name">type</span>=<span class="attr-txt">"x-shader/x-fragment"</span><span class="tag">&gt;</span>
+        #version 300 es
+        
+        precision highp float;
+        precision highp int;
+        out vec4 out_FragColor;
+        
+        void main() {
+        
+            out_FragColor = vec4( 1.0 );
+        
+        }
+    <span class="tag">&lt;/script&gt;</span>
+                        </code>
+                    <!-- </pre> -->
+
+                    <p>Second, the corresponding material creation in JavaScript.</p>
+                    <!-- <pre> -->
+                        <code>
+    <span class="js-var-kw">var</span> <span class="js-var-name">material</span> = <span class="js-fn-kw">new</span> <span class="js-class-name">THREE</span>.<span class="js-class-name">ShaderMaterial</span>( {
+        vertexShader: <span class="js-obj-name">document</span>.getElementById( <span class="attr-txt">'vs'</span> ).<span class="js-obj-name">textContent</span>.trim(),
+        fragmentShader: <span class="js-obj-name">document</span>.getElementById( <span class="attr-txt">'fs'</span> ).<span class="js-obj-name">textContent</span>.trim()
+    } );
+                        </code>
+                    <!-- </pre> -->
+                </article>
+
+                <article>
+                    <h2>Next Steps</h2>
+                    <p>Have a look at one of the official examples in order to see WebGL 2 features in action.</p>
+
+                    <a href="https://threejs.org/examples/#webgl2_materials_texture3d" target="_blank">WebGL2 / materials / texture3d</a>
+                    <a href="https://threejs.org/examples/#webgl2_materials_texture2darray" target="_blank">WebGL2 / materials / texture2darray</a>
+                    <a href="https://threejs.org/examples/#webgl2_multisampled_renderbuffers" target="_blank">WebGL2 / multisampled renderbuffers</a>
+                </article>
+
+                <article>
+                    <h2>Supported features</h2>
+                    <p>
+                        Right now, the engine does only support a subset of all existing WebGL 2 features. 
+                        The following list provides an overview about what's already available in the latest 
+                        version of three.js.
+                    </p>
+                    <ul>
+                        <li>3D Textures</li>
+                        <li>2D Texture Arrays</li>
+                        <li>Multisampled Renderbuffers</li>
+                        <li>
+                            Non-power of two (POT) textures work just the same as POT textures now. No resizing 
+                            is required for best quality.
+                        </li>
+                    </ul>
+                </article>
+            </section>
+
+            <section class="main-section" id="drawing_lines">
+                <h2 class="section-header">Drawing lines</h2>
+                <p>
+                    Let's say you want to draw a line or a circle, not a wireframe <a href="https://threejs.org/docs/index.html#api/en/objects/Mesh" target="_blank">Mesh</a>. 
+                    First we need to set up the <a href="https://threejs.org/docs/index.html#api/en/renderers/WebGLRenderer" target="_blank">renderer</a>, <a href="https://threejs.org/docs/index.html#api/en/scenes/Scene" target="_blank">scene</a> and camera (see the Creating 
+                    a scene page).
+                </p>
+                <p>Here is the code that we will use:</p>
+                <!-- <pre> -->
+                    <code>
+    <span class="js-var-kw">var</span> <span class="js-var-name">renderer</span> = <span class="js-fn-kw">new</span> <span class="js-class-name">THREE</span>.<span class="js-class-name">WebGLRenderer</span>();
+    <span class="js-obj-name">renderer</span>.setSize( <span class="js-obj-name">window</span>.innerWidth, <span class="js-obj-name"></span>window.innerHeight );
+    <span class="js-obj-name">document</span>.<span class="js-obj-name">body</span>.appendChild( renderer.domElement );
+
+    <span class="js-var-kw">var</span> <span class="js-var-name">camera</span> = <span class="js-fn-kw">new</span> <span class="js-class-name">THREE</span>.<span class="js-class-name">PerspectiveCamera</span>( <span class="js-int">45</span>,
+        window.innerWidth / window.innerHeight, <span class="js-int">1</span>, <span class="js-int">500</span> );
+    <span class="js-var-name">camera</span>.<span class="js-obj-name"></span>position.set( <span class="js-int">0</span>, <span class="js-int">0</span>, <span class="js-int">100</span> );
+    <span class="js-var-name">camera</span>.lookAt( <span class="js-int">0</span>, <span class="js-int">0</span>, <span class="js-int">0</span> );
+
+    <span class="js-var-kw">var</span> <span class="js-var-name">scene</span> = <span class="js-fn-kw">new</span> <span class="js-class-name">THREE</span>.<span class="js-class-name">Scene</span>();
+                    </code>
+                <!-- </pre> -->
+                <p>
+                    Next thing we will do is define a material. For lines we have to use <a href="https://threejs.org/docs/index.html#api/en/materials/LineBasicMaterial" target="_blank">LineBasicMaterial</a> or 
+                    <a href="https://threejs.org/docs/index.html#api/en/materials/LineDashedMaterial" target="_blank">LineDashedMaterial</a>.
+                </p>
+                <!-- <pre> -->
+                    <code>
+    <span class="js-comment">//create a blue LineBasicMaterial</span>
+    <span class="js-var-kw">var</span> <span class="js-var-name">material</span> = <span class="js-fn-kw">new</span> <span class="js-class-name">THREE</span>.<span class="js-class-name">LineBasicMaterial</span>( { color: <span class="js-int">0x0000ff</span> } );
+                    </code>
+                <!-- </pre> -->
+                <p>After material we will need a geometry with some vertices:</p>
+                <!-- <pre> -->
+                    <code>
+    <span class="js-var-kw">var</span> <span class="js-var-name">points</span> = [];
+    <span class="js-var-name">points</span>.push( <span class="js-fn-kw">new</span> <span class="js-class-name">THREE</span>.<span class="js-class-name">Vector3</span>( <span class="js-int">- 10</span>, <span class="js-int">0</span>, <span class="js-int">0</span> ) );
+    <span class="js-var-name">points</span>.push( <span class="js-fn-kw">new</span> <span class="js-class-name">THREE</span>.<span class="js-class-name">Vector3</span>( <span class="js-int">0</span>, <span class="js-int">10</span>, <span class="js-int">0</span> ) );
+    <span class="js-var-name">points</span>.push( <span class="js-fn-kw">new</span> <span class="js-class-name">THREE</span>.<span class="js-class-name">Vector3</span>( <span class="js-int">10</span>, <span class="js-int">0</span>, <span class="js-int">0</span> ) );
+
+    <span class="js-var-kw">var</span> <span class="js-var-name">geometry</span> = <span class="js-fn-kw">new</span> <span class="js-class-name">THREE</span>.<span class="js-class-name">BufferGeometry</span>().setFromPoints( <span class="js-obj-name">points</span> );
+                    </code>
+                <!-- </pre> -->
+                <p>
+                    Note that lines are drawn between each consecutive pair of vertices, but not between the 
+                    first and last (the line is not closed.)
+                </p>
+                <p>
+                    Now that we have points for two lines and a material, we can put them together to form a line.
+                </p>
+                <!-- <pre> -->
+                    <code>
+    <span class="js-var-kw">var</span> <span class="js-var-name">line</span> = <span class="js-fn-kw">new</span> <span class="js-class-name">THREE</span>.<span class="js-class-name">Line</span>( <span class="js-obj-name">geometry</span>, <span class="js-obj-name">material</span> );
+                    </code>
+                <!-- </pre> -->
+                <p>All that's left is to add it to the scene and call <a href="https://threejs.org/docs/index.html#api/en/renderers/WebGLRenderer.render" target="_blank">render</a>.</p>
+                <!-- <pre> -->
+                    <code>
+    <span class="js-obj-name">scene</span>.add( line );
+    <span class="js-obj-name">renderer</span>.render( <span class="js-obj-name">scene</span>, <span class="js-obj-name">camera</span> );
+                    </code>
+                <!-- </pre> -->
+                <p>You should now be seeing an arrow pointing upwards, made from two blue lines.</p>
+            </section>
+
+            <section class="main-section" id="creating_text">
+                <h2 class="section-header">Creating text</h2>
+                <p>
+                    There are often times when you might need to use text in your three.js application - 
+                    here are a couple of ways that you can do so.
+                </p>
+
+                <article>
+                    <h2>1. DOM + CSS</h2>
+                    <p>
+                        Using HTML is generally the easiest and fastest manner to add text. This is the method 
+                        used for descriptive overlays in most three.js examples.
+                    </p>
+                    <p>You can add content to a</p>
+                    <!-- <pre> -->
+                        <code>
+    <span class="tag">&lt;div</span> <span class="attr-name">id</span>=<span class="attr-txt">"info"</span><span class="tag">&gt;</span>Description<span class="tag">&lt;/div&gt;</span>
+                        </code>
+                    <!-- </pre> -->
+                    <p>
+                        and use CSS markup to position absolutely at a position above all others with a z-index 
+                        especially if you are running three.js full screen.
+                    </p>
+                </article>
+                <article>
+                    <h2>2. Draw text to canvas and use as a <a href="https://threejs.org/docs/index.html#api/en/textures/Texture" target="_blank">Texture</a></h2>
+                    <p>
+                        Use this method if you wish to draw text easily on a plane in your three.js scene.
+                    </p>
+                </article>
+                <article>
+                    <h2>3. Create a model in your favourite 3D application and export to three.js</h2>
+                    <p>
+                        Use this method if you prefer working with your 3d applications and importing the models 
+                        to three.js
+                    </p>
+                </article>
+                <article>
+                    <h2>4. Procedural Text Geometry</h2>
+                    <p>
+                        If you prefer to work purely in THREE.js or to create procedural and dynamic 3D text 
+                        geometries, you can create a mesh whose geometry is an instance of THREE.TextGeometry:
+                    </p>
+                    <!-- <pre> -->
+                        <code>
+    <span class="js-fn-kw">new</span> <span class="js-class-name">THREE</span>.<span class="js-class-name">TextGeometry</span>( <span class="js-obj-name">text</span>, <span class="js-obj-name">parameters</span> );
+                        </code>
+                    <!-- </pre> -->
+                    <p>
+                        In order for this to work, however, your TextGeometry will need an instance of THREE.Font 
+                        to be set on its "font" parameter. See the <a href="https://threejs.org/docs/index.html#api/en/geometries/TextGeometry" target="_blank">TextGeometry</a> page for more info on how this can 
+                        be done, descriptions of each accepted parameter, and a list of the JSON fonts that come with 
+                        the THREE.js distribution itself.
+                    </p>
+
+                    <h3>Examples</h3>
+                    <a href="https://threejs.org/examples/#webgl_geometry_text" target="_blank">WebGL / geometry / text</a>
+                    <a href="https://threejs.org/examples/#webgl_shadowmap" target="_blank">WebGL / shadowmap</a>
+                    <p>
+                        If Typeface is down, or you want to use a font that is not there, there's a tutorial with 
+                        a python script for blender that allows you to export text to Three.js's JSON format: 
+                        <a href="http://www.jaanga.com/2012/03/blender-to-threejs-create-3d-text-with.html" target="_blank">http://www.jaanga.com/2012/03/blender-to-threejs-create-3d-text-with.html</a>
+                    </p>
+                </article>
+                <article>
+                    <h2>5. Bitmap Fonts</h2>
+                    <p>
+                        BMFonts (bitmap fonts) allow batching glyphs into a single BufferGeometry. BMFont rendering 
+                        supports word-wrapping, letter spacing, kerning, signed distance fields with standard 
+                        derivatives, multi-channel signed distance fields, multi-texture fonts, and more. See 
+                        <a href="https://github.com/Jam3/three-bmfont-text" target="_blank">three-bmfont-text</a>.
+                    </p>
+                    <p>
+                        Stock fonts are available in projects like <a href="" target="_blank">A-Frame Fonts</a>, or you can create your own from 
+                        any .TTF font, optimizing to include only characters required for a project.
+                    </p>
+                    <p>Some helpful tools:</p>
+                    <ul>
+                        <li><a href="https://msdf-bmfont.donmccurdy.com/" target="_blank">msdf-bmfont-web</a> (web-based)</li>
+                        <li><a href="https://github.com/soimy/msdf-bmfont-xml" target="_blank">msdf-bmfont-xml</a> (commandline)</li>
+                        <li><a href="https://github.com/libgdx/libgdx/wiki/Hiero" target="_blank">hiero</a> (desktop app)</li>
+                    </ul>
+                </article>
+            </section>
+
+            <section class="main-section" id="loading_3d_models">
+                <h2 class="section-header">Loading 3D models</h2>
+                <p>
+                    3D models are available in hundreds of file formats, each with different purposes, assorted 
+                    features, and varying complexity. Although <a href="https://github.com/mrdoob/three.js/tree/dev/examples/jsm/loaders" target="_blank">three.js provides many loaders</a>, choosing the right 
+                    format and workflow will save time and frustration later on. Some formats are difficult to 
+                    work with, inefficient for realtime experiences, or simply not fully supported at this time.
+                </p>
+                <p>
+                    This guide provides a workflow recommended for most users, and suggestions for what to try if 
+                    things don't go as expected.
+                </p>
+                <article>
+                    <h2>Before we start</h2>
+                    <p>
+                        If you're new to running a local server, begin with <a href="#how_to_run_things_locally" target="_blank">how to run things locally</a> first. Many 
+                        common errors viewing 3D models can be avoided by hosting files correctly.
+                    </p>
+                </article>
+                <article>
+                    <h2>Recommended workflow</h2>
+                    <p>
+                        Where possible, we recommend using glTF (GL Transmission Format). Both .GLB and .GLTF 
+                        versions of the format are well supported. Because glTF is focused on runtime asset 
+                        delivery, it is compact to transmit and fast to load. Features include meshes, materials, 
+                        textures, skins, skeletons, morph targets, animations, lights, and cameras.
+                    </p>
+                    <p>
+                        Public-domain glTF files are available on sites like <a href="https://sketchfab.com/3d-models?features=downloadable&sort_by=-likeCount" target="_blank">Sketchfab</a>, or various tools include glTF export:
+                    </p>
+                    <ul>
+                        <li><a href="https://github.com/KhronosGroup/glTF-Blender-IO" target="_blank">glTF-Blender-IO</a> by the Khronos Group</li>
+                        <li><a href="https://github.com/KhronosGroup/COLLADA2GLTF" target="_blank">COLLADA2GLTF</a> by the Khronos Group</li>
+                        <li><a href="https://github.com/facebookincubator/FBX2glTF" target="_blank">FBX2GLTF</a> by Facebook</li>
+                        <li><a href="https://github.com/CesiumGS/obj2gltf" target="_blank">OBJ2GLTF</a> by Analytical Graphics Inc</li>
+                        <li><a href="https://www.substance3d.com/products/substance-painter" target="_blank">Substance Painter</a> by Allegorithmic</li>
+                        <li><a href="https://www.foundry.com/products/modo" target="_blank">Modo</a> by Foundry</li>
+                        <li><a href="https://marmoset.co/toolbag/" target="_blank">Toolbag</a> by Marmoset</li>
+                        <li><a href="https://www.sidefx.com/products/houdini/" target="_blank">Houdini</a> by SideFX</li>
+                        <li><a href="https://labs.maxon.net/?p=3360" target="_blank">Cinema 4D</a> by MAXON</li>
+                        <li>…and <a href="https://github.com/khronosgroup/gltf#gltf-tools" target="_blank">many more</a></li>
+                    </ul>
+                    <p>
+                        If your preferred tools do not support glTF, consider requesting glTF export from the 
+                        authors, or posting on <a href="https://github.com/KhronosGroup/glTF/issues/1051" target="_blank">the glTF roadmap thread</a>.
+                    </p>
+                    <p>
+                        When glTF is not an option, popular formats such as FBX, OBJ, or COLLADA are also 
+                        available and regularly maintained.
+                    </p>
+                </article>
+                <article>
+                    <h2>Loading</h2>
+                    <p>
+                        Only a few loaders (e.g. <a href="https://threejs.org/docs/index.html#api/en/loaders/ObjectLoader" target="_blank">ObjectLoader</a>) are included by default with three.js — others 
+                        should be added to your page individually. Depending on your preference and comfort with 
+                        build tools, choose one of the following:
+                    </p>
+                    <!-- <pre> -->
+                        <code>
+    <span class="js-comment">// global script</span>
+    <span class="tag">&lt;script</span> <span class="attr-name">src</span>=<span class="attr-txt">"GLTFLoader.js"</span><span class="tag">&gt;&lt;/script&gt;</span>
+
+    <span class="js-comment">// commonjs</span>
+    <span class="js-var-kw">var</span> <span class="js-var-name">THREE</span> = <span class="js-obj-name">window</span>.<span class="js-var-name">THREE</span> = <span class="js-method">require</span>(<span class="attr-txt">'three'</span>);
+    <span class="js-method">require</span>(<span class="attr-txt">'three/examples/js/loaders/GLTFLoader'</span>);
+
+    <span class="js-comment">// ES modules</span>
+    <span class="js-fn-kw">import</span> { <span class="js-obj-name">GLTFLoader</span> } <span class="js-fn-kw">from</span> <span class="attr-txt">'three/examples/jsm/loaders/GLTFLoader'</span>;
+                        </code>
+                    <!-- </pre> -->
+                    <p>
+                        Once you've imported a loader, you're ready to add a model to your scene. Syntax varies 
+                        among different loaders — when using another format, check the examples and documentation 
+                        for that loader. For glTF, usage with global scripts would be:
+                    </p>
+                    <!-- <pre> -->
+                        <code>
+    <span class="js-var-kw">var</span> <span class="js-var-name">loader</span> = <span class="js-fn-kw">new</span> <span class="js-class-name">THREE</span>.<span class="js-class-name">GLTFLoader</span>();
+
+    <span class="js-var-name">loader</span>.load( <span class="attr-txt">'path/to/model.glb'</span>, <span class="js-fn-kw">function</span> ( <span class="js-obj-name">gltf</span> ) {
+
+        <span class="js-obj-name">scene</span>.add( <span class="js-obj-name">gltf</span>.scene );
+
+    }, <span class="js-boolean">undefined</span>, <span class="js-fn-kw">function</span> ( <span class="js-obj-name">error</span> ) {
+
+        <span class="js-fn-name">console</span>.<span class="js-boolean">error</span>( <span class="js-obj-name">error</span> );
+
+    } );
+                        </code>
+                    <!-- </pre> -->
+                    <p>See <a href="https://threejs.org/docs/index.html#examples/en/loaders/GLTFLoader" target="_blank">GLTFLoader documentation</a> for further details.</p>
+                </article>
+                <article>
+                    <h2>Troubleshooting</h2>
+                    <p>
+                        You've spent hours modeling an artisanal masterpiece, you load it into the webpage, 
+                        and — oh no! 😭 It's distorted, miscolored, or missing entirely. Start with these 
+                        troubleshooting steps:
+                    </p>
+                    <ol>
+                        <li>
+                            Check the JavaScript console for errors, and make sure you've used an onError 
+                            callback when calling .load() to log the result.
+                        </li>
+                        <li>
+                            View the model in another application. For glTF, drag-and-drop viewers are available 
+                            for <a href="https://gltf-viewer.donmccurdy.com/" target="_blank">three.js</a> and <a href="https://sandbox.babylonjs.com/" target="_blank">babylon.js</a>. If the model appears correctly in one or more 
+                            applications, <a href="https://github.com/mrdoob/three.js/issues/new" target="_blank">file a bug against three.js</a>. If the model cannot be shown in any 
+                            application, we strongly encourage filing a bug with the application used to create 
+                            the model.
+                        </li>
+                        <li>
+                            Try scaling the model up or down by a factor of 1000. Many models are scaled 
+                            differently, and large models may not appear if the camera is inside the model.
+                        </li>
+                        <li>Try to add and position a light source. The model may be hidden in the dark.</li>
+                        <li>
+                            Look for failed texture requests in the network tab, like <em>C:\\Path\To\Model\texture.jpg</em>. 
+                            Use paths relative to your model instead, such as <em>images/texture.jpg</em> — this may require 
+                            editing the model file in a text editor.
+                        </li>
+                    </ol>
+                </article>
+                <article>
+                    <h2>Asking for help</h2>
+                    <p>
+                        If you've gone through the troubleshooting process above and your model still isn't working, 
+                        the right approach to asking for help will get you to a solution faster. Post a question 
+                        on the <a href="https://discourse.threejs.org/" target="_blank"></a>three.js forum and, whenever possible, include your model (or a simpler model with 
+                        the same problem) in any formats you have available. Include enough information for someone 
+                        else to reproduce the issue quickly — ideally, a live demo.
+                    </p>
+                </article>
+            </section>
+
+            <section class="main-section" id="faq">
+                <h2 class="section-header">FAQ</h2>
+                <article>
+                    <h2>Which 3D model format is best supported?</h2>
+                    <p>
+                        The recommended format for importing and exporting assets is glTF (GL Transmission Format). 
+                        Because glTF is focused on runtime asset delivery, it is compact to transmit and fast to load.
+                    </p>
+                    <p>
+                        three.js provides loaders for many other popular formats like FBX, Collada or OBJ as well. 
+                        Nevertheless, you should always try to establish a glTF based workflow in your projects 
+                        first. For more information, see <a href="https://threejs.org/docs/#manual/en/introduction/Loading-3D-models" target="_blank">loading 3D models</a>.
+                    </p>
+                </article>
+                <article>
+                    <h2>Why are there meta viewport tags in examples?</h2>
+                    <!-- <pre> -->
+                        <code>
+    <span class="tag">&lt;meta</span> <span class="attr-name">name</span>=<span class="attr-txt">"viewport"</span> <span class="attr-name">content</span>=<span class="attr-txt">"width=device-width, user-scalable=no,</span> 
+    <span class="attr-txt">minimum-scale=1.0, maximum-scale=1.0"</span><span class="tag">&gt;</span>
+                        </code>
+                    <!-- </pre> -->
+                    <p>
+                        These tags control viewport size and scale for mobile browsers (where page content may be 
+                        rendered at different size than visible viewport).
+                    </p>
+                    <p><a href="https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariWebContent/UsingtheViewport/UsingtheViewport.html" target="_blank">Safari: Using the Viewport</a></p>
+                    <p><a href="https://developer.mozilla.org/en-US/docs/Mozilla/Mobile/Viewport_meta_tag" target="_blank">MDN: Using the viewport meta tag</a></p>
+                </article>
+                <article>
+                    <h2>How can scene scale be preserved on resize?</h2>
+                    <p>
+                        We want all objects, regardless of their distance from the camera, to appear the same size, 
+                        even as the window is resized. The key equation to solving this is this formula for the 
+                        visible height at a given distance:
+                    </p>
+                    <!-- <pre> -->
+                        <code>
+    <span class="js-var-name">visible_height</span> = <span class="js-int">2</span> * Math.<span class="js-method">tan</span>( ( Math.PI / <span class="js-int">180</span> ) * <span class="js-obj-name">camera</span>.fov / <span class="js-int">2</span> ) * 
+    <span class="js-obj-name">distance_from_camera</span>;
+                        </code>
+                    <!-- </pre> -->
+                    <p>
+                        If we increase the window height by a certain percentage, then what we want is the visible 
+                        height at all distances to increase by the same percentage. This can not be done by changing 
+                        the camera position. Instead you have to change the camera field-of-view. <a href="http://jsfiddle.net/Q4Jpu/" target="_blank">Example</a>.
+                    </p>
+                </article>
+                <article>
+                    <h2>Why is part of my object invisible?</h2>
+                    <p>
+                        This could be because of face culling. Faces have an orientation that decides which side 
+                        is which. And the culling removes the backside in normal circumstances. To see if this is 
+                        your problem, change the material side to THREE.DoubleSide.
+                    </p>
+                    <!-- <pre> -->
+                        <code>
+    <span class="js-obj-name">material</span>.side = <span class="js-obj-name">THREE</span>.DoubleSide
+                        </code>
+                    <!-- </pre> -->
+                </article>
+            </section>
+
+            <section class="main-section" id="useful_links">
+                <h2 class="section-header">Useful links</h2>
+                <p>
+                    The following is a collection of links that you might find useful when learning three.js.
+                    If you find something that you'd like to add here, or think that one of the links below is 
+                    no longer relevant or working, feel free to click the 'edit' button in the top right and 
+                    make some changes!
+                </p>
+                <p>
+                    Note also that as three.js is under rapid development, a lot of these links will contain 
+                    information that is out of date - if something isn't working as you'd expect or as one of 
+                    these links says it should, check the browser console for warnings or errors. Also check 
+                    the relevant docs pages.
+                </p>
+                <article>
+                    <h2>Help forums</h2>
+                    <p>
+                        Three.js officially uses the <a href="https://discourse.threejs.org/" target="_blank">forum</a> and <a href="https://stackoverflow.com/tags/three.js/info" target="_blank">Stack Overflow</a> for help requests. If you need 
+                        assistance with something, that's the place to go. Do NOT open an issue on Github for 
+                        help requests.
+                    </p>
+                </article>
+                <article>
+                    <h2>Tutorials and courses</h2>
+                    <h3>Getting started with three.js</h3>
+                    <ul>
+                        <li><a href="https://threejsfundamentals.org/threejs/lessons/threejs-fundamentals.html" target="_blank">Three.js Fundamentals starting lesson</a></li>
+                        <li><a href="https://codepen.io/rachsmith/post/beginning-with-3d-webgl-pt-1-the-scene" target="_blank">Beginning with 3D WebGL</a> by <a href="https://codepen.io/rachsmith/" target="_blank">Rachel Smith</a>.</li>
+                        <li><a href="https://www.august.com.au/blog/animating-scenes-with-webgl-three-js/" target="_blank">Animating scenes with WebGL and three.js</a></li>
+                    </ul>
+                </article>
+                <article>
+                    <h3>More extensive / advanced articles and courses</h3>
+                    <ul>
+                        <li><a href="https://discoverthreejs.com/" target="_blank">Discover three.js</a></li>
+                        <li><a href="https://threejsfundamentals.org/" target="_blank">Three.js Fundamentals</a></li>
+                        <li><a href="http://blog.cjgammon.com/" target="_blank">Collection of tutorials</a> by <a href="http://www.cjgammon.com/" target="_blank">CJ Gammon</a></li>
+                        <li><a href="https://medium.com/@soffritti.pierfrancesco/glossy-spheres-in-three-js-bfd2785d4857" target="_blank">Glossy spheres in three.js</a>.</li>
+                        <li>
+                            <a href="https://www.udacity.com/course/interactive-3d-graphics--cs291" target="_blank">Interactive 3D Graphics</a> - a free course on Udacity 
+                            that teaches the fundamentals of 3D Graphics, and uses three.js as its coding tool.
+                        </li>
+                        <li><a href="https://aerotwist.com/tutorials/" target="_blank">Aerotwist</a> tutorials by <a href="https://github.com/paullewis/" target="_blank">Paul Lewis</a>.</li>
+                        <li><a href="http://learningthreejs.com/" target="_blank">Learning Three.js</a> – a blog with articles dedicated to teaching three.js</li>
+                        <li><a href="https://discourse.threejs.org/t/three-js-bookshelf/2468" target="_blank">Three.js Bookshelf</a> - Looking for more resources about three.js 
+                            or computer graphics in general? Check out the selection of literature 
+                            recommended by the community.
+                        </li>
+                    </ul>
+                </article>
+                <article>
+                    <h2>News and Updates</h2>
+                    <ul>
+                        <li><a href="https://twitter.com/hashtag/threejs" target="_blank">Three.js on Twitter</a></li>
+                        <li><a href="https://www.reddit.com/r/threejs/" target="_blank">Three.js on reddit</a></li>
+                        <li><a href="https://www.reddit.com/r/webgl/" target="_blank">WebGL on reddit</a></li>
+                        <li><a href="http://learningwebgl.com/blog/" target="_blank">Learning WebGL Blog</a> – The authoritive news source for WebGL.</li>
+                    </ul>
+                </article>
+                <article>
+                    <h2>Examples</h2>
+                    <ul>
+                        <li><a href="https://github.com/edwinwebb/three-seed/" target="_blank">three-seed</a> - three.js starter project with ES6 and Webpack</li>
+                        <li><a href="http://stemkoski.github.io/Three.js/index.html" target="_blank">Professor Stemkoskis Examples</a> - a collection of 
+                            beginner friendly examples built using three.js r60.
+                        </li>
+                        <li><a href="https://threejs.org/examples/" target="_blank">Official three.js examples</a> - these examples are 
+                            maintained as part of the three.js repository, and always use the latest version 
+                            of three.js.
+                        </li>
+                        <li><a href="https://raw.githack.com/mrdoob/three.js/dev/examples/" target="_blank">Official three.js dev branch examples</a> - Same as the 
+                            above, except these use the dev branch of three.js, and are used to check that 
+                            everything is working as three.js being is developed.
+                        </li>
+                    </ul>
+                </article>
+                <article>
+                    <h2>Tools</h2>
+                    <ul>
+                        <li><a href="http://www.physgl.org/" target="_blank">physgl.org</a> - JavaScript front-end with wrappers to 
+                            three.js, to bring WebGL graphics to students learning physics and math.
+                        </li>
+                        <li><a href="https://whs.io/" target="_blank">Whitestorm.js</a> – Modular three.js framework with AmmoNext physics plugin.</li>
+                        <li><a href="http://zz85.github.io/zz85-bookmarklets/threelabs.html" target="_blank">Three.js Inspector</a></li>
+                        <li><a href="http://idflood.github.io/ThreeNodes.js/" target="_blank">ThreeNodes.js</a>.</li>
+                        <li><a href="https://marketplace.visualstudio.com/items?itemName=bierner.comment-tagged-templates" target="_blank">comment-tagged-templates</a> - VSCode extension syntax highlighting for tagged template strings, like: glsl.js.</li>
+                        <li><a href="https://github.com/MozillaReality/WebXR-emulator-extension" target="_blank">WebXR-emulator-extension</a></li>
+                    </ul>
+                </article>
+                <article>
+                    <h2>WebGL References</h2>
+                    <ul>
+                        <li>
+                            <a href="" target="_blank">webgl-reference-card.pdf</a> - Reference of all WebGL and 
+                            GLSL keywords, terminology, syntax and definitions.
+                        </li>
+                    </ul>
+                </article>
+                <article>
+                    <h2>Old Links</h2>
+                    <p>
+                        These links are kept for historical purposes - you may still find them useful, but be 
+                        warned that they may have information relating to very old versions of three.js.
+                    </p>
+                    <ul>
+                        <li><a href="https://www.youtube.com/watch?v=Dir4KO9RdhM" target="_blank">AlterQualia at WebGL Camp 3</a></li>
+                        <li><a href="http://yomotsu.github.io/threejs-examples/" target="_blank">Yomotsus Examples</a> - a collection of examples using three.js r45.</li>
+                        <li><a href="http://fhtr.org/BasicsOfThreeJS/#1" target="_blank">Introduction to Three.js</a> by <a href="https://github.com/kig/" target="_blank">Ilmari Heikkinen</a> (slideshow).</li>
+                        <li><a href="http://www.slideshare.net/yomotsu/webgl-and-threejs" target="_blank">WebGL and Three.js</a> by <a href="https://github.com/yomotsu" target="_blank">Akihiro Oyamada</a> (slideshow).</li>
+                        <li><a href="http://bkcore.com/blog/general/adobe-user-group-nl-talk-video-hexgl.html" target="_blank">Fast HTML5 game development using three.js</a> by <a href="https://github.com/BKcore" target="_blank">BKcore</a> (video).</li>
+                        <li><a href="https://www.youtube.com/watch?v=VdQnOaolrPA" target="_blank">Trigger Rally</a> by <a href="https://github.com/jareiko" target="_blank">jareiko</a> (video).</li>
+                        <li><a href="http://blackjk3.github.io/threefab/" target="_blank">ThreeFab</a> - scene editor, maintained up until around three.js r50.</li>
+                        <li><a href="http://bkcore.com/blog/3d/webgl-three-js-workflow-tips.html" target="_blank">Max to Three.js workflow tips and tricks</a> by <a href="https://github.com/BKcore" target="_blank">BKcore</a></li>
+                        <li><a href="https://12devsofxmas.co.uk/2012/01/webgl-and-three-js/" target="_blank">A whirlwind look at Three.js</a> by <a href="https://github.com/nrocy" target="_blank">Paul King</a></li>
+                        <li><a href="http://bkcore.com/blog/3d/webgl-three-js-animated-selective-glow.html" target="_blank"></a>Animated selective glow in Three.js by <a href="https://github.com/BKcore" target="_blank">BKcore</a></li>
+                        <li><a href="http://www.natural-science.or.jp/article/20120220155529.php" target="_blank">Building A Physics Simulation Environment</a> - three.js tutorial in Japanese</li>
+                    </ul>
+                </article>
+            </section>
+        </main>
+    </body>
+</html>

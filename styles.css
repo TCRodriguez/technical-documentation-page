@@ -1,0 +1,161 @@
+* {
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: #03047a;
+    color: rgb(255, 255, 255);
+    margin: 0;
+    word-break: break-word;
+}
+
+
+
+/* Reusable pieces */
+
+.section-header {
+    font-size: 3rem;
+}
+
+.tag, 
+.js-fn-name,
+.js-class-kw, 
+.js-class-name {
+    color: #67AFF6;
+}
+
+.attr-name {
+    color: #FFD572;
+}
+
+.attr-txt {
+    color: #90D290;
+}
+
+.css-value,
+.js-method,
+.js-boolean {
+    color: #E2A4F4;
+}
+
+.js-comment {
+    color: #777C85;
+}
+
+
+/* 'kw' means 'keyword' */
+.js-var-kw,
+.js-fn-kw,
+.js-if,
+.js-else {
+    color: #FFEFA2;
+}
+
+.js-var-name,
+.js-obj-name {
+    color: #F47678;
+}
+
+.js-int,
+.js-float {
+    color: #FEA363;
+}
+
+
+
+/* =================== */
+/* Main body styling */
+/* =================== */
+
+
+#navbar {
+    height: 100%;
+    width: 20%;
+    min-width: 19%;
+    position: fixed;
+    z-index: 100;
+    top: 0;
+    left: 0;    
+    overflow-y: auto;
+    overflow-x: hidden;
+    font-family: 'Roboto Mono', monospace;
+    /* display: flex; */
+    flex-direction: column;
+}
+
+#nav-header {
+    padding: 20px;
+    text-align: center;
+    border-right: 1px solid white;
+    border-bottom: 1px solid white;
+    position: fixed;
+    width: 20%;
+    background-color: #03047a;
+    z-index: 9999;
+}
+
+header {
+    font-size: 1.5rem;
+}
+
+#navbar ul {
+    margin: 0;
+    padding: 0;
+    margin-top: 21vh;
+    
+}
+
+#navbar li {
+    list-style: none;
+    text-align: center;
+    padding: 20px;
+    border-right: 1px solid white;
+    position: relative;
+
+}
+
+#navbar li:hover {
+    border: 1px solid white;
+}
+
+#navbar a {
+    text-decoration: none;
+    color: white;
+    display: block;
+}
+
+
+#main-doc {
+    margin-left: 20%;
+    padding: 0 10%;
+    font-family: 'Lato', sans-serif;
+}
+
+
+
+code {
+    padding-right: 100px;
+    white-space: pre-wrap;
+    background-color: rgba(0, 0, 0, 0.755);
+    display: block;
+}
+
+a {
+    text-decoration: none;
+    color: #FFD572;
+}
+
+#main-doc a:hover {
+    background-color: black;
+    padding: 2px;
+}
+
+table {
+    text-align: center;
+}
+
+table th {
+    border-bottom: 2px solid white;
+    border-bottom-width: 5px;
+}
